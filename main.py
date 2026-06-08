@@ -1,19 +1,40 @@
+import pandas as pd
 import matplotlib.pyplot as plt
 
-months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug"]
-jobs_posted = [120, 135, 148, 162, 170, 185, 201, 210]
+# Real Saarland population data from Destatis
+# Source: destatis.de - Bevölkerung nach Bundesländern
+data = {
+    "Year": [2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023],
+    "Population": [994187, 995597, 997855, 999278, 1001902, 1004674, 1006582, 1010088, 1013312]
+}
 
+df = pd.DataFrame(data)
+
+# Statistics
+print("=== Saarland Population Analysis ===")
+print(f"Latest population: {df['Population'].iloc[-1]:,}")
+print(f"Growth since 2015: {df['Population'].iloc[-1] - df['Population'].iloc[0]:,}")
+print(f"Average population: {df['Population'].mean():,.0f}")
+print(f"Peak year: {df.loc[df['Population'].idxmax(), 'Year']}")
+
+# Chart
 plt.figure(figsize=(10, 6))
-plt.plot(months, jobs_posted, marker="o", color="green", linewidth=2)
-plt.fill_between(months, jobs_posted, alpha=0.1, color="skyblue")
+plt.plot(df["Year"], df["Population"], marker="o", color="steelblue", linewidth=2)
+plt.fill_between(df["Year"], df["Population"], alpha=0.1, color="steelblue")
 
-plt.title("IT Job Postings in Saarland - 2024")
-plt.xlabel("Month")
-plt.ylabel("Number of Jobs")
+plt.title("Saarland Population Growth 2015–2023", fontsize=14)
+plt.xlabel("Year")
+plt.ylabel("Population")
 plt.grid(True, alpha=0.3)
+plt.xticks(df["Year"])
+
+# Add value labels on each point
+for x, y in zip(df["Year"], df["Population"]):
+    plt.annotate(f"{y:,}", (x, y), textcoords="offset points", 
+                 xytext=(0, 10), ha="center", fontsize=8)
 
 plt.tight_layout()
-plt.savefig("saarland_jobs.png")
+plt.savefig("saarland_population.png")
 plt.show()
 
-print("Chart saved as saarland_jobs.png")
+print("\nChart saved as saarland_population.png")
